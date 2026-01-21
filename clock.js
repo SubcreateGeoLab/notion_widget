@@ -1,28 +1,37 @@
-// clock.js – pure ES module, no external deps
+// clock.js – pure ES module, no external dependencies
 
 /**
- * Formats a Date object as HH:MM:SS (24‑hour clock).
- * @param {Date} date
+ * Returns the current time formatted as HH:MM (24‑hour clock).
  * @returns {string}
  */
-function formatTime(date) {
-  const pad = (n) => String(n).padStart(2, '0');
-  return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+function getCurrentTime() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(now.getHours())}:${pad(now.getMinutes())}`;
 }
 
 /**
- * Updates the #clock element with the current local time.
+ * Writes the formatted time into the #clock element.
  */
-function tick() {
-  const now = new Date();
+function render() {
   const clockEl = document.getElementById('clock');
-  if (clockEl) {
-    clockEl.textContent = formatTime(now);
-  }
+  if (!clockEl) return console.warn('#clock element not found');
+  clockEl.textContent = getCurrentTime();
 }
 
-// Initial render
-tick();
+/**
+ * Schedule the next update exactly at the start of the next minute.
+ * This prevents drift that `setInterval(60000)` can introduce.
+ */
+function scheduleNextTick() {
+  const now = new Date();
+  const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+  setTimeout(() => {
+    render();
+    scheduleNextTick(); // recurse for the following minute
+  }, msToNextMinute);
+}
 
-// Refresh every second
-setInterval(tick, 1000);
+// Initial render + start the ticking loop
+render();
+scheduleNextTick();
