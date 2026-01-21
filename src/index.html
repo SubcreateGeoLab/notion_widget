@@ -4,17 +4,59 @@
   <meta charset="UTF-8">
   <title>Notion Clock Widget</title>
 
-  <!-- NOTE: raw.githubusercontent.com serves the *raw* file, not the GitHub UI -->
+  <!-- --------------------------------------------------------------
+       1️⃣  Stylesheet
+       --------------------------------------------------------------
+       • Relative path – after the first deployment the file will be served
+         from the same origin (GitHub Pages), which avoids CORS issues and
+         makes the URL stable even if the default branch changes.
+       • A tiny inline fallback is kept for the unlikely case the CSS
+         fails to load.
+  -------------------------------------------------------------- -->
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* Tiny inline fallback in case the external CSS fails to load */
-    #clock {font-family:system-ui,sans-serif;font-size:2rem;color:#222;}
-  </style>
-</head>
-<body>
-  <div id="clock" aria-label="Current time"></div>
+    /* Inline fallback – only used if the external CSS cannot be fetched */
+    #clock {
+      font-family: system-ui, sans-serif;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      color: #222;
+    }
 
+    /* Dark‑mode adaptation – Notion respects the user’s OS theme */
+    @media (prefers-color-scheme: dark) {
+      body { background:#1a1a1a; }
+      #clock { color:#eee; }
+    }
+  </style>
+
+  <!-- --------------------------------------------------------------
+       2️⃣  Content‑Security‑Policy (optional but recommended)
+       --------------------------------------------------------------
+       • Limits the page to loading resources only from its own origin.
+       • Helps protect against accidental injection when the widget is
+         embedded in a third‑party environment like Notion.
+  -------------------------------------------------------------- -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+
+</head>
+
+<body>
+  <!-- --------------------------------------------------------------
+       3️⃣  Clock placeholder
+       --------------------------------------------------------------
+       • `aria-label` gives screen‑readers a meaningful description.
+       • `role="timer"` is recognized by some ATs as a live timer.
+  -------------------------------------------------------------- -->
+  <div id="clock" role="timer" aria-label="Current time"></div>
+
+  <!-- --------------------------------------------------------------
+       4️⃣  JavaScript module
+       --------------------------------------------------------------
+       • Relative path – same reason as the CSS.
+       • The module implements a **HH:MM** clock (seconds omitted).
+  -------------------------------------------------------------- -->
   <script type="module" src="clock.js"></script>
 
   <noscript>
