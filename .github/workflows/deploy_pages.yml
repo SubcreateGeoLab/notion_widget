@@ -1,24 +1,32 @@
-name: Deploy to GitHub Pages
+name: Deploy Notion Clock to GitHub Pages
 
+# Trigger on every push to the default branch (commonly `main`)
 on:
   push:
     branches: [main]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write          # needed for the peaceiris action to push
     steps:
+      # 1️⃣ Checkout the repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Sync src → docs
+      # 2️⃣ Copy src → docs (the folder that GitHub Pages will serve)
+      - name: Prepare publishing folder
         run: |
           rm -rf docs
           mkdir docs
           cp -r src/* docs/
 
-      - name: Publish to GitHub Pages
+      # 3️⃣ Deploy using the widely‑used peaceiris action
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}   # auto‑generated token
           publish_dir: ./docs
+          # Optional: keep the history clean
+          keep_files: false
