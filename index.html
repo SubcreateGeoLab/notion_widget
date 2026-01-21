@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notion Clock Widget</title>
+
+  <!-- NOTE: raw.githubusercontent.com serves the *raw* file, not the GitHub UI -->
+  <link rel="stylesheet"
+        href="https://raw.githubusercontent.com/SubcreateGeoLab/notion_widget/main/src/style.css">
+
+  <style>
+    /* Tiny inline fallback in case the external CSS fails to load */
+    #clock {font-family:system-ui,sans-serif;font-size:2rem;color:#222;}
+  </style>
+</head>
+<body>
+  <div id="clock" aria-label="Current time"></div>
+
+  <script type="module"
+          src="https://raw.githubusercontent.com/SubcreateGeoLab/notion_widget/main/src/clock.js">
+  </script>
+
+  <noscript>
+    Please enable JavaScript to view the clock widget.
+  </noscript>
+</body>
+</html>
